@@ -1,10 +1,7 @@
 import { errorHandler } from "./handlers";
-import puppeteerExtra from "puppeteer-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import { apiFetcher } from "./api";
 import { TerminalPool } from "@/types/terminal";
 import { openai } from "..";
-puppeteerExtra.use(StealthPlugin());
 
 export async function getTokenChart(token: string) {
   try {
