@@ -6,12 +6,12 @@ import { openai } from "..";
 export async function getTokenChart(token: string) {
   try {
     const poolsData = await apiFetcher<TerminalPool>(
-      `https://api.geckoterminal.com/api/v2/networks/eth/tokens/${token}/pools?page=1`
+      `https://api.geckoterminal.com/api/v2/networks/solana/tokens/${token}/pools?page=1`
     );
     const topPool = poolsData?.data.data.at(0);
     const pool = topPool?.attributes.address;
     const ohlcv_data = await apiFetcher(
-      `https://api.geckoterminal.com/api/v2/networks/eth/pools/${pool}/ohlcv/minute?aggregate=15&currency=usd`
+      `https://api.geckoterminal.com/api/v2/networks/solana/pools/${pool}/ohlcv/minute?aggregate=15&currency=usd`
     );
     return { topPool, ohlcv_data };
   } catch (error) {
@@ -23,7 +23,7 @@ export async function getTokenChart(token: string) {
 export async function getTokenAudit(token: string) {
   try {
     const requestBody = {
-      chain: "eth",
+      chain: "solana",
       tier: "basic",
       tokenAddress: token,
     };
