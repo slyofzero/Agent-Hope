@@ -4,6 +4,7 @@ declare global {
       NODE_ENV: "development" | "production";
       PORT: string | undefined;
       OPEN_AI_KEY: string | undefined;
+      BEARER_TOKEN: string | undefined;
     }
   }
 }

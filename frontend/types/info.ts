@@ -11,6 +11,10 @@ export interface ITokenInfo {
     title: string;
     paragraphs: string[];
   };
+  engagementData: {
+    title: string;
+    paragraphs: string[];
+  };
 }
 
 export interface TokenInfoApiRes {

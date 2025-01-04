@@ -1,7 +1,8 @@
 import { errorHandler } from "./handlers";
 import { apiFetcher } from "./api";
 import { TerminalPool } from "@/types/terminal";
-import { openai } from "..";
+import { openai, twitter } from "..";
+import { PairData } from "@/types";
 
 export async function getTokenChart(token: string) {
   try {
@@ -64,12 +65,47 @@ export const tokenInfoFormat = {
       "Basic trading strategy",
     ],
   },
+  engagementData: {},
 };
 
+export async function getRecentTweets(token: string) {
+  try {
+    const data = await apiFetcher<PairData>(
+      `https://api.dexscreener.com/latest/dex/tokens/${token}`
+    );
+
+    const socials = data?.data?.pairs?.find(
+      (pair) => pair.info.socials.length > 0
+    );
+
+    const username = socials?.info.socials
+      .find((social) => social.type === "twitter")
+      ?.url.replace("https://x.com/", "");
+
+    if (!username) {
+      return { data: [] };
+    }
+
+    // Step 1: Get the user ID from the username
+    const user = await twitter.users.findUserByUsername(username, {"tweet.fields": ["public_metrics"]}); //prettier-ignore
+    const userId = user.data?.id;
+
+    if (!userId) {
+      return { data: [] };
+    }
+    const tweets = await twitter.tweets.usersIdTweets(userId, {"tweet.fields": ["public_metrics"]}); //prettier-ignore
+    return { data: tweets.data, user: user.data };
+  } catch (error) {
+    errorHandler(error);
+    return { data: [] };
+  }
+}
+
 export async function getAITokenInfo(token: string) {
-  const [chart, audit] = await Promise.all([
+  const [chart, audit, tweets] = await Promise.all([
     getTokenChart(token),
     getTokenAudit(token),
+    getRecentTweets(token),
   ]);
 
   if (!chart || !audit) {
@@ -78,15 +114,36 @@ export async function getAITokenInfo(token: string) {
 
   const { ohlcv_data, topPool } = chart;
 
-  const prompt = `Chart data - ${JSON.stringify(ohlcv_data)}
+  let dataText = `Chart data - ${JSON.stringify(ohlcv_data)}
   Audit data - ${JSON.stringify(audit)}
-  Market data - ${JSON.stringify(topPool)}
-  
-  Analyze the chart that is formed by the data below and identify the chart pattern, points of resistance and support and where to look for a breakout with a basic trading strategy. Include market info about the top pool and the token audit data in your analysis. Start off with the name of the token and current market data related to the pool, then move onto the audit, then finally the chart analysis.
-  
-  The output data shouold be in the following format: ${JSON.stringify(
-    tokenInfoFormat
-  )}`;
+  Market data - ${JSON.stringify(topPool)}`;
+
+  if (tweets.data?.length) {
+    dataText += `Tweets by token account - ${JSON.stringify(tweets.data)}`;
+  }
+
+  let instructions = `\n\nAnalyze the chart that is formed by the data below and identify the chart pattern, points of resistance and support and where to look for a breakout with a basic trading strategy. Include market info about the top pool and the token audit data in your analysis. Start off with the name of the token and current market data related to the pool, then move onto the audit, then finally the chart analysis.`;
+
+  if (tweets.data?.length) {
+    instructions += `Also analyze the recent tweets along with how much engagement they got.`;
+  }
+
+  const structuredFormat = structuredClone(tokenInfoFormat);
+
+  if (tweets.data?.length) {
+    structuredFormat.engagementData = {
+      title: "Engagement Data",
+      paragraphs: [
+        "Overall engagement over the last few tweets and compare with followers and following",
+        "What the recent tweets have been about",
+        "Anything extra you might wanna add (optional)",
+      ],
+    };
+  }
+
+  const structure = `\n\nThe output data shouold be in the following format: ${JSON.stringify(structuredFormat)}`; //prettier-ignore
+
+  const prompt = `${dataText} ${instructions} ${structure}`;
 
   const chat = await openai.chat.completions.create({
     model: "gpt-4o",

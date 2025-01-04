@@ -14,6 +14,9 @@ interface Pair {
   liquidity: Liquidity;
   fdv: number;
   pairCreatedAt: number;
+  info: {
+    socials: { type: string; url: string }[];
+  };
 }
 
 interface Token {
