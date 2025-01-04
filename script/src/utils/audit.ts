@@ -47,7 +47,7 @@ export const tokenInfoFormat = {
   marketData: {
     title: "Market Data",
     paragraphs: [
-      "Have an ASCII art related to the token here",
+      "Have an ASCII art related to the token here, maybe at times include the token name in the art",
       "The market data includes the token name, token age, token price, market cap, liquidity, price deviation across a certain time interval, and all such basic info. Don't list all these things in the order mentioned here, instead just write a paragraph about the market data in general.",
       "Make an inference using the market data in this paragraph.",
     ],
@@ -57,7 +57,7 @@ export const tokenInfoFormat = {
     paragraphs: [
       "Include the key points from the audit in this paragraph and word them nicely.",
       "Have another paragraph here about the audit (optional)",
-      "Have an ASCII art related to the audit here",
+      "Have an ASCII art related to the audit here, maybe at times include the word 'audit' in the art",
     ],
     bulletPoints: ["Include 2-5 bullet points here related to token audit"],
   },
@@ -150,7 +150,7 @@ export async function getAITokenInfo(token: string) {
 
   const structure = `\n\nThe output data shouold be in the following format: ${JSON.stringify(structuredFormat)}`; //prettier-ignore
 
-  const prompt = `${dataText} ${instructions} ${structure}\n. The overall tone should be monotonous and something that'd fit a terminal vibe with monospace font. Try making long paragraphs while still keeping it relevant. The ascii art should a bunch of \\ | / () [] {} forming a shape. ALWAYS HAVE THE JSON DATA BE RETURNED IN A JSON CODE CELL.`;
+  const prompt = `${dataText} ${instructions} ${structure}\n. The overall tone should be monotonous and something that'd fit a terminal vibe with monospace font. Try making long paragraphs while still keeping it relevant. The ascii art should a bunch of \\ | / () [] {} with max substring of 5-6 characters. ALWAYS HAVE THE JSON DATA BE RETURNED IN A JSON CODE CELL.`;
 
   const chat = await openai.chat.completions.create({
     model: "gpt-4o",
