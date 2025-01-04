@@ -41,6 +41,8 @@ export async function getTokenAudit(token: string) {
   }
 }
 
+// const asciiArt = `░█░█░█▀█░▀█▀░░░█▀█░█▀▀░█▀█░█░█░█▀▄░▀█▀░█▀▀ ░█▄█░█▀█░░█░░░░█░█░█░█░█░█░█░█░█░█░░░▀▀█░█▀▀ ░█░█░▀░▀░░▀░░░░▀▀▀░▀▀▀░▀▀▀░▀▄▀░▀▀░░░░▀▀▀░▀▀▀`;
+
 export const tokenInfoFormat = {
   marketData: {
     title: "Market Data",
@@ -148,7 +150,7 @@ export async function getAITokenInfo(token: string) {
 
   const structure = `\n\nThe output data shouold be in the following format: ${JSON.stringify(structuredFormat)}`; //prettier-ignore
 
-  const prompt = `${dataText} ${instructions} ${structure}\n. The overall tone should be monotonous and something that'd fit a terminal vibe with monospace font. Try making long paragraphs while still keeping it relevant.`;
+  const prompt = `${dataText} ${instructions} ${structure}\n. The overall tone should be monotonous and something that'd fit a terminal vibe with monospace font. Try making long paragraphs while still keeping it relevant. The ascii art should a bunch of \\ | / () [] {} forming a shape. ALWAYS HAVE THE JSON DATA BE RETURNED IN A JSON CODE CELL.`;
 
   const chat = await openai.chat.completions.create({
     model: "gpt-4o",
