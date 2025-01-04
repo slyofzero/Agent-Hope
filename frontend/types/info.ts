@@ -1,4 +1,4 @@
-interface TokenInfo {
+export interface ITokenInfo {
   marketData: {
     title: string;
     paragraphs: string[];
@@ -14,6 +14,6 @@ interface TokenInfo {
 }
 
 export interface TokenInfoApiRes {
-  data: TokenInfo;
+  data: ITokenInfo;
   response: number;
 }

@@ -1,20 +1,25 @@
 "use client";
-import { SCRIPT_URL } from "@/utils/env";
 import { FormEvent, useState } from "react";
 import { apiFetcher } from "@/utils/api";
-import { TokenInfoApiRes } from "@/types/info";
+import { TokenInfoResponse } from "./api/token/[token]/route";
+import { TokenInfo } from "@/components/TokenInfo";
 
 export default function Home() {
-  const [] = useState({});
+  const [tokenInfo, setTokenInfo] = useState<TokenInfoResponse["data"] | null>(); // prettier-ignore
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const getTokenInfo = async (e: FormEvent) => {
     e.preventDefault();
     const token = (e.target as HTMLFormElement).token.value;
-    const res = await apiFetcher<TokenInfoApiRes>(`${SCRIPT_URL}/token/${token}`); // prettier-ignore
-    console.log(res?.data.data);
+    setIsLoading(true);
+    const res = await apiFetcher<TokenInfoResponse>(`/api/token/${token}`); // prettier-ignore
+    if (res?.data) setTokenInfo(res.data.data);
+    else setTokenInfo(null);
+    setIsLoading(false);
   };
 
   return (
-    <div className="flex justify-center p-4">
+    <div className="flex flex-col items-center justify-center p-4 gap-8 mb-16">
       <form className="flex items-center gap-4" onSubmit={getTokenInfo}>
         <input
           name="token"
@@ -26,6 +31,12 @@ export default function Home() {
           Get data
         </button>
       </form>
+
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        tokenInfo && <TokenInfo data={tokenInfo} />
+      )}
     </div>
   );
 }
