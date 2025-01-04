@@ -18,7 +18,7 @@ export default async function handler(
 
   try {
     const tokenData = await apiFetcher<TerminalPool>(
-      `https://api.geckoterminal.com/api/v2/networks/eth/tokens/${address}/pools?page=1`
+      `https://api.geckoterminal.com/api/v2/networks/solana/tokens/${address}/pools?page=1`
     );
 
     if (!tokenData || !tokenData.data.data.length) {
