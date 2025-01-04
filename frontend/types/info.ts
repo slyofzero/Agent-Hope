@@ -14,6 +14,11 @@ export interface ITokenInfo {
 }
 
 export interface TokenInfoApiRes {
+  message: string;
+  jobId: string;
+}
+
+export interface TokenInfoJobApiRes {
+  status: "pending" | "completed" | "rejected";
   data: ITokenInfo;
-  response: number;
 }

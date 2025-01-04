@@ -1,20 +1,34 @@
-"use client";
 import { FormEvent, useState } from "react";
 import { apiFetcher } from "@/utils/api";
-import { TokenInfoResponse } from "./api/token/[token]/route";
+import { ITokenInfo, TokenInfoApiRes, TokenInfoJobApiRes } from "@/types/info";
+import { sleep } from "@/utils/time";
 import { TokenInfo } from "@/components/TokenInfo";
 
 export default function Home() {
-  const [tokenInfo, setTokenInfo] = useState<TokenInfoResponse["data"] | null>(); // prettier-ignore
+  const [tokenInfo, setTokenInfo] = useState<ITokenInfo | null>(); // prettier-ignore
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getTokenInfo = async (e: FormEvent) => {
     e.preventDefault();
     const token = (e.target as HTMLFormElement).token.value;
     setIsLoading(true);
-    const res = await apiFetcher<TokenInfoResponse>(`/api/token/${token}`); // prettier-ignore
-    if (res?.data) setTokenInfo(res.data.data);
-    else setTokenInfo(null);
+    const res = await apiFetcher<TokenInfoApiRes>(`/api/token/${token}`); // prettier-ignore
+    if (res?.data) {
+      const jobId = res.data.jobId;
+
+      for (let i = 0; i < 20; i++) {
+        const jobRes = await apiFetcher<TokenInfoJobApiRes>(
+          `/api/job/${jobId}`
+        );
+
+        if (jobRes?.data.status !== "pending") {
+          setTokenInfo(jobRes?.data.data);
+          break;
+        }
+
+        await sleep(5000);
+      }
+    } else setTokenInfo(null);
     setIsLoading(false);
   };
 
