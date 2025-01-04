@@ -3,14 +3,17 @@ import { OPEN_AI_KEY, PORT } from "./utils/env";
 import express from "express";
 import { log } from "./utils/handlers";
 import { getAITokenInfo, TokenInfo } from "./utils/audit";
+import cors from "cors";
 
 export const openai = new OpenAI({
   apiKey: OPEN_AI_KEY,
 });
 
-(async function () {
-  const app = express();
+const app = express();
+app.use(express.json());
+app.use(cors());
 
+(async function () {
   app.get("/token/:address", async (req, res) => {
     const address = req.params.address;
     let info = await getAITokenInfo(address);
