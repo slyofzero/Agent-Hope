@@ -2,18 +2,22 @@ export interface ITokenInfo {
   marketData: {
     title: string;
     paragraphs: string[];
+    bulletPoints?: string[];
   };
   auditData: {
     title: string;
     paragraphs: string[];
+    bulletPoints: string[];
   };
   chartData: {
     title: string;
     paragraphs: string[];
+    bulletPoints: string[];
   };
   engagementData: {
     title: string;
     paragraphs: string[];
+    bulletPoints?: string[];
   };
 }
 
