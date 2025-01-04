@@ -21,6 +21,8 @@ async function processTokenInfo(address: string, jobId: string) {
     return;
   }
 
+  console.log(info);
+
   info = info.replace(/```json/, "").replace(/```/, "");
   const jsonData = JSON.parse(info) as TokenInfo;
   scheduledJobs[jobId] = { status: "completed", data: jsonData };
