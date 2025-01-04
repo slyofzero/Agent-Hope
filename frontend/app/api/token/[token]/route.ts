@@ -15,7 +15,8 @@ export interface TokenInfoResponse {
 
 export async function GET(req: Request, context: { params: Params }) {
   try {
-    const { token } = context.params;
+    const token = context.params.token;
+
     const tokenData = await apiFetcher<TerminalPool>(
       `https://api.geckoterminal.com/api/v2/networks/eth/tokens/${token}/pools?page=1`
     );
