@@ -1,28 +1,19 @@
-import { useDefaultTokenInfoAtom } from "@/stats/defaultInfo";
+import { useDefaultTokenInfoAtom } from "@/states/defaultInfo";
 import { ITokenInfo, TokenInfoApiRes, TokenInfoJobApiRes } from "@/types/info";
-import { TerminalPool } from "@/types/terminal";
 import { apiFetcher } from "@/utils/api";
 import { sleep } from "@/utils/time";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 import { Scanning } from "../Scanning";
-import Link from "next/link";
-import { FaBars } from "react-icons/fa";
-
-const navLinks = [
-  { text: "Pump.fun", url: "#" },
-  { text: "DexScreener", url: "#" },
-  { text: "Telegram", url: "#" },
-  { text: "X", url: "#" },
-];
+import { Header } from "../Header";
+import { PairData } from "@/types/pair";
 
 export function Home() {
   const router = useRouter();
   const { setDefaultTokenInfo } = useDefaultTokenInfoAtom();
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
   const getTokenInfo = async (e: FormEvent) => {
     e.preventDefault();
@@ -31,10 +22,11 @@ export function Home() {
 
     const token = (e.target as HTMLFormElement).token.value;
 
-    const tokenData = await apiFetcher<TerminalPool>(
-      `https://api.geckoterminal.com/api/v2/networks/solana/tokens/${token}/pools?page=1`
+    const tokenPoolsData = await apiFetcher<PairData>(
+      `https://api.dexscreener.com/latest/dex/tokens/${token}`
     );
-    if (!tokenData || !tokenData?.data?.data?.length) {
+    const tokenData = tokenPoolsData?.data?.pairs?.at(0);
+    if (!tokenData) {
       setError("No pools found for this token");
       setIsScanning(false);
       return;
@@ -51,7 +43,8 @@ export function Home() {
         );
 
         if (jobRes?.data.status !== "pending") {
-          setDefaultTokenInfo(jobRes?.data.data as ITokenInfo);
+          const tokenInfo = jobRes?.data.data as ITokenInfo;
+          setDefaultTokenInfo({ tokenData, tokenInfo });
           router.push("/scan");
           break;
         }
@@ -65,34 +58,7 @@ export function Home() {
     <Scanning />
   ) : (
     <main className="flex flex-col gap-8 items-center p-8 h-screen overflow-hidden bg-gradient-to-b from-background to-black">
-      <div className="w-full flex items-center justify-between md:px-32">
-        <Image src="/logo.png" width={30} height={30} alt="Home" />
-
-        <button
-          className="md:hidden text-white"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          <FaBars />
-        </button>
-
-        <nav
-          className={`${
-            menuOpen
-              ? "flex flex-col absolute top-12 right-16 bg-background p-2"
-              : "hidden"
-          } md:flex gap-4 items-center text-xs tracking-widest`}
-        >
-          {navLinks.map((link, key) => (
-            <Link
-              className="border border-neutral-200 border-solid bg-neutral-800 text-center w-32 py-1"
-              key={key}
-              href={link.url}
-            >
-              {link.text}
-            </Link>
-          ))}
-        </nav>
-      </div>
+      <Header />
 
       <div className="flex flex-col flex-grow items-center justify-center gap-8 relative">
         <Image
@@ -104,7 +70,7 @@ export function Home() {
         />
 
         <div className="tracking-widest flex flex-col gap-8 items-center text-center relative md:-top-20">
-          <div className="text-xs md:text-base flex flex-col gap-4 md:w-[500px]">
+          <div className="text-xs md:text-base font-medium flex flex-col gap-4 md:w-[500px]">
             <h1>
               Welcome to hope-tech. I&apos;m Hope, your data analytic agent for
               solana contracts.

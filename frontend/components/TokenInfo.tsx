@@ -16,7 +16,7 @@ export function TokenInfo({ data }: Props) {
   const highlightNumbers = (text: string) => {
     return text.split(/(\$\d\.+|\d+)/).map((part, index) =>
       /\$\d\.+|\d+/.test(part) ? (
-        <span key={index} className="text-yellow-400 font-semibold">
+        <span key={index} className="text-green-400 font-semibold">
           {part}
         </span>
       ) : (
@@ -26,21 +26,21 @@ export function TokenInfo({ data }: Props) {
   };
 
   return (
-    <main className={`flex flex-col gap-8`}>
+    <main className={`flex flex-col gap-8 col-span-8`}>
       {keys.map((key: keyof ITokenInfo) => {
         if (!data[key].paragraphs) return null;
         return (
           <section
             key={key}
-            className="flex flex-col gap-4 border border-dotted border-white p-4 lg:px-8 border-spacing-9"
+            className="flex flex-col gap-4 border-2 border-solid border-white p-4 lg:px-8 border-spacing-9"
           >
-            <h1 className="text-2xl font-bold text-yellow-400">
+            <h1 className="text-2xl font-bold text-green-400">
               {data[key].title}
             </h1>
             {data[key].paragraphs.map((p, i) => (
               <p
                 key={i}
-                className="text-white md:pr-96 border-t border-dotted border-white pt-4 leading-7"
+                className="text-white border-t border-dotted border-white pt-4 leading-7"
               >
                 {highlightNumbers(p)}
               </p>

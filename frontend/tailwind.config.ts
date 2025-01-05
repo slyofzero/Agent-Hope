@@ -11,6 +11,7 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        highlight: "#E6FF27",
       },
       maskImage: {
         "fade-bottom": "linear-gradient(to bottom, black, transparent)",
