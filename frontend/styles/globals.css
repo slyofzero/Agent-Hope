@@ -4,20 +4,29 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #141414;
+  --foreground: #ededed;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: "Orbitron", serif;
-  /* font-optical-sizing: auto; */
+}
+
+.image-fade {
+  position: relative;
+  overflow: hidden; /* Ensure content doesn't overflow */
+}
+
+.fade-bottom {
+  display: block;
+  width: 100%; /* Ensure the image scales properly */
+  height: auto;
+
+  /* Gradient mask for fading effect */
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }

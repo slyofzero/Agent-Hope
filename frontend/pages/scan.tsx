@@ -56,6 +56,8 @@ export default function AnalysisPage() {
     setIsLoading(false);
   };
 
+  console.log(JSON.stringify(tokenInfo));
+
   return (
     <div
       className={`flex flex-col items-center justify-center p-4 gap-8 mt-4 md:mt-16 mb-16 ${courier.className}`}

@@ -12,6 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      maskImage: {
+        "fade-bottom": "linear-gradient(to bottom, black, transparent)",
+      },
     },
   },
   plugins: [],
