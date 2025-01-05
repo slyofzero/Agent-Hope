@@ -6,6 +6,7 @@ interface Props {
 
 export function TokenInfo({ data }: Props) {
   const keys: (keyof ITokenInfo)[] = [
+    "tokenData",
     "marketData",
     "auditData",
     "chartData",

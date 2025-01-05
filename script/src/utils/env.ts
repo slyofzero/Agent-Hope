@@ -5,4 +5,5 @@ dotenv.config({
   path: NODE_ENV === "development" ? ".env" : ".env.production",
 });
 
-export const { OPEN_AI_KEY, PORT, BEARER_TOKEN } = process.env;
+export const { OPEN_AI_KEY, PORT, BEARER_TOKEN, RPC_ENDPOINT, API_URL } =
+  process.env;

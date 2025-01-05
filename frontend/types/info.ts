@@ -1,4 +1,9 @@
 export interface ITokenInfo {
+  tokenData: {
+    title: string;
+    paragraphs: string[];
+    bulletPoints?: string[];
+  };
   marketData: {
     title: string;
     paragraphs: string[];

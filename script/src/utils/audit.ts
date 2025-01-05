@@ -3,6 +3,9 @@ import { apiFetcher } from "./api";
 import { TerminalPool } from "@/types/terminal";
 import { openai, twitter } from "..";
 import { PairData } from "@/types";
+import { solanaConnection } from "@/rpc/config";
+3;
+import { Metaplex, PublicKey } from "@metaplex-foundation/js";
 
 export async function getTokenChart(token: string) {
   try {
@@ -44,6 +47,13 @@ export async function getTokenAudit(token: string) {
 // const asciiArt = `░█░█░█▀█░▀█▀░░░█▀█░█▀▀░█▀█░█░█░█▀▄░▀█▀░█▀▀ ░█▄█░█▀█░░█░░░░█░█░█░█░█░█░█░█░█░█░░░▀▀█░█▀▀ ░█░█░▀░▀░░▀░░░░▀▀▀░▀▀▀░▀▀▀░▀▄▀░▀▀░░░░▀▀▀░▀▀▀`;
 
 export const tokenInfoFormat = {
+  tokenData: {
+    title: "Token Data",
+    paragraphs: [
+      "Briefly explain the token, if it's a memecoin or an AI utility or some other product based coin",
+      "What the website says if the token has any (optional)",
+    ],
+  },
   marketData: {
     title: "Market Data",
     paragraphs: [
@@ -108,7 +118,8 @@ export async function getRecentTweets(token: string) {
 }
 
 export async function getAITokenInfo(token: string) {
-  const [chart, audit, tweets] = await Promise.all([
+  const [metadata, chart, audit, tweets] = await Promise.all([
+    getTokenMetadata(token),
     getTokenChart(token),
     getTokenAudit(token),
     getRecentTweets(token),
@@ -120,7 +131,8 @@ export async function getAITokenInfo(token: string) {
 
   const { ohlcv_data, topPool } = chart;
 
-  let dataText = `Chart data - ${JSON.stringify(ohlcv_data)}
+  let dataText = `Token Data - ${JSON.stringify(metadata)}
+  Chart data - ${JSON.stringify(ohlcv_data)}
   Audit data - ${JSON.stringify(audit)}
   Market data - ${JSON.stringify(topPool)}`;
 
@@ -178,4 +190,17 @@ export interface TokenInfo {
     title: string;
     paragraphs: string[];
   };
+}
+
+export async function getTokenMetadata(mintAddress: string) {
+  const metaplex = Metaplex.make(solanaConnection);
+
+  // Create PublicKey object for the mint address
+  const mintPublicKey = new PublicKey(mintAddress);
+
+  // Fetch the metadata
+  const nft = await metaplex.nfts().findByMint({ mintAddress: mintPublicKey });
+  const output = { metadata: nft.json, website: "" };
+
+  return output;
 }
