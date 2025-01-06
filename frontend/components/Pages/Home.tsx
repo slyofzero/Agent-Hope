@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { FormEvent } from "react";
 import { Header } from "../Header";
+import { ReactTyped } from "react-typed";
 
 export function Home() {
   const router = useRouter();
@@ -28,10 +29,21 @@ export function Home() {
         <div className="tracking-widest flex flex-col gap-8 items-center text-center relative md:-top-20">
           <div className="text-xs md:text-base font-medium flex flex-col gap-4 md:w-[500px]">
             <h1>
-              Welcome to hope-tech. I&apos;m Hope, your data analytic agent for
-              solana contracts.
+              <ReactTyped
+                showCursor={false}
+                typeSpeed={50}
+                strings={[
+                  "Welcome to hope-tech. I&apos;m Hope, your data analytic agent for solana contracts.",
+                ]}
+              />
             </h1>
-            <h1>Please key in the address to start:</h1>
+            <h1>
+              <ReactTyped
+                showCursor={false}
+                typeSpeed={50}
+                strings={["Please key in the address to start:"]}
+              />
+            </h1>
           </div>
 
           <form

@@ -12,7 +12,7 @@ export function Header() {
   return (
     <header className="w-full flex flex-col md:flex-row items-center justify-between md:px-16 gap-8">
       <Link href={"/"}>
-        <Image src="/logo.png" width={30} height={30} alt="Home" />
+        <Image src="/logo.png" width={300} height={300} alt="Home" />
       </Link>
 
       <nav

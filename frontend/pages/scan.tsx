@@ -14,6 +14,7 @@ import { FaTelegramPlane } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { CiGlobe } from "react-icons/ci";
 import { useRouter } from "next/router";
+import { ReactTyped } from "react-typed";
 
 const courier = Inconsolata({
   weight: ["400", "500", "600", "700", "800"],
@@ -96,18 +97,33 @@ export default function AnalysisPage() {
               alt="agent hope"
               className="border border-solid border-white"
             />
+            {/* <video
+              height={600}
+              width={600}
+              className="border border-solid border-white"
+              controls
+              autoPlay
+              loop
+            >
+              <source src="/agent_hope.mp4" type="mp4" />
+            </video> */}
             <div
               className={`bg-white px-2 py-1 text-center font-semibold ${
                 error ? "text-red-400" : "text-black"
               }`}
             >
-              {error
-                ? error
-                : isScanning
-                ? "Scanning..."
-                : !baseTokenData
-                ? "No token to scan"
-                : "Here's the information about this token"}
+              <ReactTyped
+                strings={[
+                  error
+                    ? error
+                    : isScanning
+                    ? "Scanning..."
+                    : !baseTokenData
+                    ? "No token to scan"
+                    : "Here's the information about this token",
+                ]}
+                showCursor={false}
+              />
             </div>
           </div>
 
@@ -116,18 +132,29 @@ export default function AnalysisPage() {
               <div className="flex flex-col gap-4">
                 <span>
                   Name:{" "}
-                  <span className="text-highlight">{baseTokenData?.name}</span>
+                  <span className="text-highlight">
+                    <ReactTyped
+                      strings={[baseTokenData?.name]}
+                      showCursor={false}
+                    />
+                  </span>
                 </span>
                 <span>
                   Ticker:{" "}
                   <span className="text-highlight">
-                    {baseTokenData?.symbol}
+                    <ReactTyped
+                      strings={[baseTokenData?.symbol]}
+                      showCursor={false}
+                    />
                   </span>
                 </span>
                 <span>
                   Contract Address:{" "}
                   <span className="text-highlight">
-                    {baseTokenData?.address}
+                    <ReactTyped
+                      strings={[baseTokenData?.address]}
+                      showCursor={false}
+                    />
                   </span>
                 </span>
               </div>
@@ -164,7 +191,15 @@ export default function AnalysisPage() {
 
           {!isScanning && (
             <div className="flex flex-col gap-4">
-              <h3>Would you like to search for any other contracts?</h3>
+              <h3>
+                <ReactTyped
+                  strings={[
+                    "Would you like to search for any other contracts?",
+                  ]}
+                  showCursor={false}
+                  startWhenVisible
+                />
+              </h3>
 
               <form
                 className="flex flex-row items-center gap-4"
@@ -195,6 +230,8 @@ export default function AnalysisPage() {
         ) : (
           tokenInfo && <TokenInfo data={tokenInfo.tokenInfo} />
         )}
+
+        <br />
       </div>
     </main>
   );
