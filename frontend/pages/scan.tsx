@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { apiFetcher } from "@/utils/api";
 import { ITokenInfo, TokenInfoApiRes, TokenInfoJobApiRes } from "@/types/info";
 import { sleep } from "@/utils/time";
@@ -13,6 +13,7 @@ import Link from "next/link";
 import { FaTelegramPlane } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { CiGlobe } from "react-icons/ci";
+import { useRouter } from "next/router";
 
 const courier = Inconsolata({
   weight: ["400", "500", "600", "700", "800"],
@@ -20,14 +21,21 @@ const courier = Inconsolata({
 });
 
 export default function AnalysisPage() {
+  const router = useRouter();
   const { defaultTokenInfo } = useDefaultTokenInfoAtom();
   const [tokenInfo, setTokenInfo] = useState<ITokenInfoAtom | null>(defaultTokenInfo); // prettier-ignore
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  const getTokenInfo = async (e: FormEvent) => {
+  const scanNewToken = (e: FormEvent) => {
     e.preventDefault();
     const token = (e.target as HTMLFormElement).token.value;
+    router.push(`/scan?token=${token}`);
+  };
+
+  const getTokenInfo = async (token: string) => {
+    setIsScanning(true);
+    setError("");
 
     const tokenPoolsData = await apiFetcher<PairData>(
       `https://api.dexscreener.com/latest/dex/tokens/${token}`
@@ -38,9 +46,6 @@ export default function AnalysisPage() {
       setIsScanning(false);
       return;
     }
-
-    setIsScanning(true);
-    setError("");
 
     const res = await apiFetcher<TokenInfoApiRes>(`/api/token/${token}`); // prettier-ignore
     if (res?.data) {
@@ -67,11 +72,14 @@ export default function AnalysisPage() {
   const tokenData = tokenInfo?.tokenData;
   const baseTokenData = tokenData?.baseToken;
 
-  return isScanning ? (
-    <Scanning />
-  ) : (
+  useEffect(() => {
+    const { token } = router.query;
+    if (token) getTokenInfo(token as string);
+  }, [router]);
+
+  return (
     <main
-      className={`flex flex-col gap-8 items-center p-8 h-screen ${courier.className}`}
+      className={`flex flex-col gap-8 items-center p-8 h-screen bg-black ${courier.className}`}
     >
       <Header />
 
@@ -95,13 +103,15 @@ export default function AnalysisPage() {
             >
               {error
                 ? error
+                : isScanning
+                ? "Scanning..."
                 : !baseTokenData
                 ? "No token to scan"
                 : "Here's the information about this token"}
             </div>
           </div>
 
-          {!error && baseTokenData && (
+          {!error && baseTokenData && !isScanning && (
             <>
               <div className="flex flex-col gap-4">
                 <span>
@@ -152,32 +162,36 @@ export default function AnalysisPage() {
             </>
           )}
 
-          <div className="flex flex-col gap-4">
-            <h3>Would you like to search for any other contracts?</h3>
+          {!isScanning && (
+            <div className="flex flex-col gap-4">
+              <h3>Would you like to search for any other contracts?</h3>
 
-            <form
-              className="flex flex-row items-center gap-4"
-              onSubmit={getTokenInfo}
-            >
-              <input
-                name="token"
-                type="text"
-                placeholder="Type here..."
-                className="border border-white border-solid text-sm bg-black p-2 px-4 flex-grow text-white outline-none"
-              />
-
-              <button
-                type="submit"
-                className="bg-green-500 text-whie px-8 py-1 text-sm"
+              <form
+                className="flex flex-row items-center gap-4"
+                onSubmit={scanNewToken}
               >
-                scan
-              </button>
-            </form>
-          </div>
+                <input
+                  name="token"
+                  type="text"
+                  placeholder="Type here..."
+                  className="border border-white border-solid text-sm bg-black p-2 px-4 flex-grow text-white outline-none"
+                />
+
+                <button
+                  type="submit"
+                  className="bg-green-500 text-whie px-8 py-1 text-sm"
+                >
+                  scan
+                </button>
+              </form>
+            </div>
+          )}
         </div>
 
         {error ? (
           <span className="text-red-400 col-span-8 text-center">{error}</span>
+        ) : isScanning ? (
+          <Scanning />
         ) : (
           tokenInfo && <TokenInfo data={tokenInfo.tokenInfo} />
         )}

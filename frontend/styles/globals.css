@@ -10,7 +10,7 @@
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: black;
   font-family: "Roboto Mono", serif;
 }
 

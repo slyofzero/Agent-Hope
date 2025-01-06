@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function HomePage() {
   const [isWebsiteLoading, setIsWebsiteLoading] = useState<boolean>(true);
 
-  return isWebsiteLoading ? (
+  return !isWebsiteLoading ? (
     <Loading setVideoEnded={setIsWebsiteLoading} />
   ) : (
     <Home />

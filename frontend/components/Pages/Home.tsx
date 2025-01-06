@@ -1,62 +1,18 @@
-import { useDefaultTokenInfoAtom } from "@/states/defaultInfo";
-import { ITokenInfo, TokenInfoApiRes, TokenInfoJobApiRes } from "@/types/info";
-import { apiFetcher } from "@/utils/api";
-import { sleep } from "@/utils/time";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { FormEvent, useState } from "react";
-import { Scanning } from "../Scanning";
+import { FormEvent } from "react";
 import { Header } from "../Header";
-import { PairData } from "@/types/pair";
 
 export function Home() {
   const router = useRouter();
-  const { setDefaultTokenInfo } = useDefaultTokenInfoAtom();
-  const [isScanning, setIsScanning] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
 
   const getTokenInfo = async (e: FormEvent) => {
     e.preventDefault();
-    setIsScanning(true);
-    setError("");
-
     const token = (e.target as HTMLFormElement).token.value;
-
-    const tokenPoolsData = await apiFetcher<PairData>(
-      `https://api.dexscreener.com/latest/dex/tokens/${token}`
-    );
-    const tokenData = tokenPoolsData?.data?.pairs?.at(0);
-    if (!tokenData) {
-      setError("No pools found for this token");
-      setIsScanning(false);
-      return;
-    }
-
-    const res = await apiFetcher<TokenInfoApiRes>(`/api/token/${token}`); // prettier-ignore
-    if (res?.data) {
-      const jobId = res.data.jobId;
-      await sleep(5000);
-
-      for (let i = 0; i < 20; i++) {
-        const jobRes = await apiFetcher<TokenInfoJobApiRes>(
-          `/api/job/${jobId}`
-        );
-
-        if (jobRes?.data.status !== "pending") {
-          const tokenInfo = jobRes?.data.data as ITokenInfo;
-          setDefaultTokenInfo({ tokenData, tokenInfo });
-          router.push("/scan");
-          break;
-        }
-
-        await sleep(5000);
-      }
-    } else setDefaultTokenInfo(null);
+    router.push(`/scan?token=${token}`);
   };
 
-  return isScanning ? (
-    <Scanning />
-  ) : (
+  return (
     <main className="flex flex-col gap-8 items-center p-8 h-screen overflow-hidden bg-gradient-to-b from-background to-black">
       <Header />
 
@@ -75,13 +31,7 @@ export function Home() {
               Welcome to hope-tech. I&apos;m Hope, your data analytic agent for
               solana contracts.
             </h1>
-            <h1>
-              {error ? (
-                <span className="text-red-400">{error}</span>
-              ) : (
-                <>Please key in the address to start:</>
-              )}
-            </h1>
+            <h1>Please key in the address to start:</h1>
           </div>
 
           <form
