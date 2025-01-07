@@ -57,7 +57,6 @@ export const tokenInfoFormat = {
   marketData: {
     title: "Market Data",
     paragraphs: [
-      "Have an ASCII art related to the token here, maybe at times include the token name in the art",
       "The market data includes the token name, token age, token price, market cap, liquidity, price deviation across a certain time interval, and all such basic info. Don't list all these things in the order mentioned here, instead just write a paragraph about the market data in general.",
       "Make an inference using the market data in this paragraph.",
     ],
@@ -67,7 +66,6 @@ export const tokenInfoFormat = {
     paragraphs: [
       "Include the key points from the audit in this paragraph and word them nicely.",
       "Have another paragraph here about the audit (optional)",
-      "Have an ASCII art related to the audit here, maybe at times include the word 'audit' in the art",
     ],
     bulletPoints: ["Include 2-5 bullet points here related to token audit"],
   },
@@ -155,7 +153,6 @@ export async function getAITokenInfo(token: string) {
         "Overall engagement over the last few tweets and compare with followers and following",
         "What the recent tweets have been about",
         "Anything extra you might wanna add (optional)",
-        "Have an ASCII art related to the engagement here",
       ],
     };
   }

@@ -2,10 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 
 const navLinks = [
-  { text: "Pump.fun", url: "#" },
-  { text: "DexScreener", url: "#" },
-  { text: "Telegram", url: "#" },
-  { text: "X", url: "#" },
+  {
+    text: "Pump.fun",
+    url: "https://pump.fun/coin/9he843sgdveqe2f38PE19sRFemZQATvbEPZNYU59pump",
+  },
+  {
+    text: "DexScreener",
+    url: "https://dexscreener.com/solana/fgpkgaddna58obdm4kyx3ts65jedzov5cbwszqcaunnf",
+  },
+  { text: "Telegram", url: "https://t.me/hopecoin_cto" },
+  { text: "X", url: "https://x.com/hopecoin_cto" },
 ];
 
 export function Header() {
