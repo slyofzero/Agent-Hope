@@ -15,7 +15,9 @@ export function Loading({ setVideoEnded }: Props) {
       <video
         className="w-full h-full object-cover"
         autoPlay
+        playsInline
         onEnded={handleVideoEnd}
+        muted
       >
         <source src="/website_loading.mp4" type="video/mp4" />
       </video>
