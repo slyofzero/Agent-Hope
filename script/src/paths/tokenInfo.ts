@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getAITokenInfo, TokenInfo } from "../utils/audit";
 import { nanoid } from "nanoid";
 import { scheduledJobs } from "./job";
+import { log } from "../utils/handlers";
 
 export async function tokenInfoPath(req: Request, res: Response) {
   const address = req.params.address;
@@ -10,6 +11,7 @@ export async function tokenInfoPath(req: Request, res: Response) {
 
   processTokenInfo(address, jobId);
 
+  log(`Job ${jobId} scheduled`);
   return res.json({ message: "Job started", jobId });
 }
 

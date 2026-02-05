@@ -28,8 +28,8 @@ app.get("/token/:address", tokenInfoPath);
 // @ts-expect-error weird
 app.get("/job/:jobId", getJobStatus);
 
-export default app;
+// export default app;
 
-// app.listen(PORT, () => {
-//   log(`Server is running on http://localhost:${PORT}`);
-// });
+app.listen(PORT, () => {
+  log(`Server is running on http://localhost:${PORT}`);
+});
