@@ -21,6 +21,9 @@ app.use(cors());
 (async function () {
   rpcConfig();
 
+  app.get("/ping", (_req, res) => {
+    res.status(200).json({ status: "ok" });
+  });
   // @ts-expect-error weird
   app.get("/token/:address", tokenInfoPath);
   // @ts-expect-error weird
