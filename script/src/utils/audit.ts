@@ -10,12 +10,12 @@ import { Metaplex, PublicKey } from "@metaplex-foundation/js";
 export async function getTokenChart(token: string) {
   try {
     const poolsData = await apiFetcher<TerminalPool>(
-      `https://api.geckoterminal.com/api/v2/networks/solana/tokens/${token}/pools?page=1`
+      `https://api.geckoterminal.com/api/v2/networks/solana/tokens/${token}/pools?page=1`,
     );
     const topPool = poolsData?.data.data.at(0);
     const pool = topPool?.attributes.address;
     const ohlcv_data = await apiFetcher(
-      `https://api.geckoterminal.com/api/v2/networks/solana/pools/${pool}/ohlcv/minute?aggregate=15&currency=usd`
+      `https://api.geckoterminal.com/api/v2/networks/solana/pools/${pool}/ohlcv/minute?aggregate=15&currency=usd`,
     );
     return { topPool, ohlcv_data };
   } catch (error) {
@@ -34,7 +34,7 @@ export async function getTokenAudit(token: string) {
 
     const response = await fetch(
       "https://app.quickintel.io/api/quicki/getquickiauditfull",
-      { method: "POST", body: JSON.stringify(requestBody) }
+      { method: "POST", body: JSON.stringify(requestBody) },
     );
     const jsonData = await response.json();
     return jsonData;
@@ -85,11 +85,11 @@ export const tokenInfoFormat = {
 export async function getRecentTweets(token: string) {
   try {
     const data = await apiFetcher<PairData>(
-      `https://api.dexscreener.com/latest/dex/tokens/${token}`
+      `https://api.dexscreener.com/latest/dex/tokens/${token}`,
     );
 
     const socials = data?.data?.pairs?.find(
-      (pair) => pair.info.socials.length > 0
+      (pair) => pair.info.socials.length > 0,
     );
 
     const username = socials?.info.socials
@@ -116,22 +116,20 @@ export async function getRecentTweets(token: string) {
 }
 
 export async function getAITokenInfo(token: string) {
-  const [metadata, chart, audit, tweets] = await Promise.all([
-    getTokenMetadata(token),
+  const [chart, tweets] = await Promise.all([
+    // getTokenMetadata(token),
     getTokenChart(token),
     getTokenAudit(token),
     getRecentTweets(token),
   ]);
 
-  if (!chart || !audit) {
+  if (!chart) {
     return false;
   }
 
   const { ohlcv_data, topPool } = chart;
 
-  let dataText = `Token Data - ${JSON.stringify(metadata)}
-  Chart data - ${JSON.stringify(ohlcv_data)}
-  Audit data - ${JSON.stringify(audit)}
+  let dataText = `Chart data - ${JSON.stringify(ohlcv_data)}
   Market data - ${JSON.stringify(topPool)}`;
 
   if (tweets.data?.length) {

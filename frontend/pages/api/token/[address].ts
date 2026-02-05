@@ -7,7 +7,7 @@ import { errorHandler } from "@/utils/handlers";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const { address } = req.query;
 
@@ -18,7 +18,7 @@ export default async function handler(
 
   try {
     const tokenData = await apiFetcher<TerminalPool>(
-      `https://api.geckoterminal.com/api/v2/networks/solana/tokens/${address}/pools?page=1`
+      `https://api.geckoterminal.com/api/v2/networks/solana/tokens/${address}/pools?page=1`,
     );
 
     if (!tokenData || !tokenData.data.data.length) {
@@ -27,7 +27,7 @@ export default async function handler(
     }
 
     const tokenInfo = await apiFetcher<TokenInfoApiRes>(
-      `${SCRIPT_URL}/token/${address}`
+      `${SCRIPT_URL}/token/${address}`,
     );
     if (!tokenInfo) {
       res.status(404).json({ message: "No info found for this token" });
