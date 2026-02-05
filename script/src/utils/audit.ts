@@ -1,9 +1,9 @@
 import { errorHandler } from "./handlers";
 import { apiFetcher } from "./api";
-import { TerminalPool } from "@/types/terminal";
+import { TerminalPool } from "../types/terminal";
 import { openai, twitter } from "..";
-import { PairData } from "@/types";
-import { solanaConnection } from "@/rpc/config";
+import { PairData } from "../types";
+import { solanaConnection } from "../rpc/config";
 3;
 import { Metaplex, PublicKey } from "@metaplex-foundation/js";
 

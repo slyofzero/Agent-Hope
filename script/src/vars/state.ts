@@ -1,4 +1,4 @@
-import { SwapTxnData } from "@/types";
+import { SwapTxnData } from "../types";
 
 export const userState: { [key: number]: string } = {};
 

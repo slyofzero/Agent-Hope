@@ -18,18 +18,18 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-(async function () {
-  rpcConfig();
+rpcConfig();
 
-  app.get("/ping", (_req, res) => {
-    res.status(200).json({ status: "ok" });
-  });
-  // @ts-expect-error weird
-  app.get("/token/:address", tokenInfoPath);
-  // @ts-expect-error weird
-  app.get("/job/:jobId", getJobStatus);
+app.get("/ping", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+// @ts-expect-error weird
+app.get("/token/:address", tokenInfoPath);
+// @ts-expect-error weird
+app.get("/job/:jobId", getJobStatus);
 
-  app.listen(PORT, () => {
-    log(`Server is running on http://localhost:${PORT}`);
-  });
-})();
+export default app;
+
+// app.listen(PORT, () => {
+//   log(`Server is running on http://localhost:${PORT}`);
+// });

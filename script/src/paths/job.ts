@@ -1,4 +1,4 @@
-import { TokenInfo } from "@/utils/audit";
+import { TokenInfo } from "../utils/audit";
 import { Request, Response } from "express";
 
 type JobStatus = "pending" | "completed" | "failed";
